@@ -1,0 +1,309 @@
+<html>
+<head>
+    <title>茄子TV</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="茄子TV">
+    <meta property="og:description" content="茄子TV">
+    <meta itemprop="name" content="茄子TV"/>
+    <meta itemprop="description" content="茄子TV"/>
+    <meta itemprop="image"
+          content="https://qiezizhibo-1300664818.cos.ap-shanghai.myqcloud.com/images/20200330/logo-tiyu.png"/>
+    <meta property="og:image"
+          content="https://qiezizhibo-1300664818.cos.ap-shanghai.myqcloud.com/images/20200330/logo-tiyu.png"/>
+    <meta HTTP-EQUIV="pragma" CONTENT="no-cache">
+    <meta HTTP-EQUIV="Cache-Control" CONTENT="no-store, must-revalidate">
+    <meta HTTP-EQUIV="expires" CONTENT="0">
+    <script>
+        window.onerror = e => {
+            console.error(e)
+            alert('发生错误' + e)
+        }
+    </script>
+    <link rel="shortcut icon"
+          href="https://qiezizhibo-1300664818.cos.ap-shanghai.myqcloud.com/images/20200330/logo-tiyu.png">
+    <!-- weui 样式 -->
+    <link rel="stylesheet" href="https://res.wx.qq.com/open/libs/weui/2.4.1/weui.min.css"></link>
+    <!-- 调试用的移动端 console -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/eruda"></script> -->
+    <!-- <script>eruda.init();</script> -->
+    <!-- 公众号 JSSDK -->
+    <script src="https://res.wx.qq.com/open/js/jweixin-1.6.0.js"></script>
+    <!-- jquery -->
+    <script src="https://res.wx.qq.com/mpres/zh_CN/htmledition/js/jquery-1.7.2.min.js"></script>
+    <script>
+        function docReady(fn) {
+            if (document.readyState === 'complete' || document.readyState === 'interactive') {
+                fn()
+            } else {
+                document.addEventListener('DOMContentLoaded', fn);
+            }
+        }
+
+        docReady(async function () {
+            var iconSuccessEl = $("#icon-success");
+            var iconFailEl = $("#icon-fail");
+            var titleEl = $("#title");
+            var msgEl = $("#msg");
+            var reVerifyEl = $("#reVerify");
+            var verifyToken = getQueryVariable("verifyToken");
+            var name = getQueryVariable("name");
+            //虽然通过实名认证，但所认证的人不是要求的人的情况,现仅限名字
+            $.ajax({
+                url: "https://www.qiezizhibo.com/service-system/person/verify/result",
+                dataType: "json",
+                data: {verifyToken: verifyToken},
+                success: function (res) {
+                    if (res && res.data != null && res.data.success == true) {
+                        if (res.data.result != null && res.data.result.idcard_ocr_result != null) {
+                            var idcard_ocr_result = res.data.result.idcard_ocr_result;
+                            var ocrName = idcard_ocr_result.name;
+                            if (name != ocrName) {
+                                iconSuccessEl.addClass("hidden");
+                                iconFailEl.removeClass("hidden");
+                                titleEl.html("身份核验失败");
+                                msgEl.removeClass("hidden");
+                                msgEl.html("请确保是本人操作");
+
+                                reVerifyEl.removeClass("hidden");
+                                reVerifyEl.click(function () {
+                                    window.history.go(-3);
+                                });
+                            }
+                        }
+                    } else {
+                        iconSuccessEl.addClass("hidden");
+                        iconFailEl.removeClass("hidden");
+                        titleEl.html("身份核验失败");
+                        msgEl.removeClass("hidden");
+                        msgEl.html("连接失败");
+                    }
+                }
+            });
+        })
+
+        function navigateBack() {
+            wx.miniProgram.navigateBack({delta: 1});
+        }
+    </script>
+    <script>
+        function getQueryVariable(variable) {
+            var query = window.location.search.substring(1);
+            var vars = query.split("&");
+            for (var i = 0; i < vars.length; i++) {
+                var pair = vars[i].split("=");
+                if (pair[0] == variable) {
+                    return pair[1];
+                }
+            }
+            return (false);
+        }
+    </script>
+    <style>
+        .hidden {
+            display: none !important;
+        }
+
+        button {
+            outline: 0 !important;
+        }
+
+        button :focus {
+            outline: 0 !important;
+        }
+
+        .page {
+            height: 100%;
+            box-sizing: border-box;
+        }
+
+        .layout {
+            position: relative;
+            min-height: 100%;
+            display: flex;
+            z-index: 10;
+            padding-bottom: 11.2vw;
+            flex-direction: column;
+            background: #f0f1f2;
+            box-sizing: border-box;
+        }
+
+        .layout-content {
+            position: relative;
+            -webkit-flex: 1;
+            flex: 1;
+            z-index: 10;
+        }
+
+        .layout-footer {
+            position: absolute;
+            left: 0;
+            bottom: 3.2vw;
+            z-index: 10;
+            width: 100%;
+            font-size: 3.2vw;
+            letter-spacing: 0;
+            text-align: center;
+            line-height: 4.8vw;
+            color: #c1c7ce;
+        }
+
+        .layout-content__button-wrapper {
+            vertical-align: middle;
+            width: 72.8vw;
+            height: 12vw;
+            max-width: 100%;
+            border-radius: 6vw;
+            padding: 0 8px;
+            min-width: 50px;
+            font-size: 4.26667vw;
+            font-weight: bold;
+            line-height: 12vw;
+            background-clip: border-box;
+            overflow: hidden;
+            color: #171d24;
+            border: none;
+            outline: 0;
+            background: #d9dfe6;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            margin: 0 auto;
+            text-align: center;
+            box-sizing: border-box;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .layout-content__button {
+            position: absolute;
+            padding: 0;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+            outline: 0;
+            background-color: transparent;
+            opacity: 0;
+            z-index: 1;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            padding-left: 14px;
+            padding-right: 14px;
+            box-sizing: border-box;
+            font-size: 18px;
+            text-align: center;
+            text-decoration: none;
+            line-height: 2.55555556;
+            border-radius: 5px;
+            -webkit-tap-highlight-color: transparent;
+            overflow: hidden;
+            cursor: pointer;
+            color: #000;
+        }
+
+        .layout-content__button-text {
+            display: inline;
+        }
+
+        .p-result {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+        }
+
+        .p-content {
+            padding: 31.2vw 2.66667vw 0;
+            text-align: center;
+            word-break: break-all;
+        }
+
+        .p-footer {
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            padding: 0 13.6vw;
+            box-sizing: border-box;
+        }
+
+        .icon {
+            width: 22.4vw;
+            height: 22.4vw;
+            margin: 0 auto;
+            box-sizing: border-box;
+        }
+
+        .title {
+            width: 48vw;
+            margin: 7.73333vw auto 0;
+            font-size: 5.33333vw;
+            color: #1c1d1f;
+            letter-spacing: 0;
+            line-height: 7.73333vw;
+            font-weight: bold;
+            box-sizing: border-box;
+        }
+
+        .tip {
+            margin-top: 3.2vw;
+            font-size: 3.73333vw;
+            color: #77787a;
+            letter-spacing: 0;
+            box-sizing: border-box;
+        }
+
+        .layout-bg-bottom {
+            position: absolute;
+            width: 100%;
+            left: 0;
+            bottom: 0;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+<div class="page">
+    <div class="layout">
+        <div class="layout-content">
+            <div class="p-result">
+                <div class="p-content">
+                    <div id="icon-success" class="icon">
+                        <svg viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M14 0c7.732 0 14 6.268 14 14s-6.268 14-14 14S0 21.732 0 14 6.268 0 14 0zm0 1.311C6.992 1.311 1.311 6.992 1.311 14S6.992 26.689 14 26.689 26.689 21.008 26.689 14 21.008 1.311 14 1.311zm7.772 7.9a.787.787 0 01.011 1.103l-.01.01-8.664 8.688a.787.787 0 01-1.11.003l-.01-.01-4.568-4.68a.787.787 0 011.117-1.109l.01.01 4.01 4.11 8.101-8.124a.787.787 0 011.113-.001z"
+                                  fill="#47CC74" fill-rule="nonzero"></path>
+                        </svg>
+                    </div>
+                    <div id="icon-fail" class="icon hidden">
+                        <svg viewBox="0 0 169 168" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M85 0c46.392 0 84 37.608 84 84s-37.608 84-84 84S1 130.392 1 84 38.608 0 85 0zm0 7.869C42.954 7.869 8.869 41.954 8.869 84S42.954 160.131 85 160.131 161.131 126.046 161.131 84 127.046 7.869 85 7.869zm.098 106.033a4.721 4.721 0 014.721 4.643v5.689a4.721 4.721 0 01-9.441.078l-.001-5.689a4.721 4.721 0 014.721-4.721zm.099-74.754a4.721 4.721 0 014.72 4.643l.001.078v56.3a4.721 4.721 0 01-9.442.078V43.87a4.721 4.721 0 014.72-4.721z"
+                                  fill="#FFBF00" fill-rule="nonzero"></path>
+                        </svg>
+                    </div>
+                    <div id="title" class="title">身份核验成功</div>
+                    <div id="msg" class="tip hidden">身份核验成功</div>
+                </div>
+                <div class="p-footer">
+                    <div id="reVerify" class="layout-content__button-wrapper layout-content__button-primary hidden">
+                        <button class="layout-content__button"></button>
+                        <div class="layout-content__button-text">重新核验</div>
+                    </div>
+                    <div class="layout-content__button-wrapper" onclick="navigateBack()">
+                        <button class="layout-content__button"></button>
+                        <div class="layout-content__button-text">关 闭</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layout-footer">
+            <div>©2021 茄子TV</div>
+        </div>
+        <img class="layout-bg-bottom" src="https://www.qiezizhibo.com/face/print/dist/images/bg-bottom.d0dabf54.png"
+             alt=""/>
+    </div>
+</div>
+</body>
+</html>
