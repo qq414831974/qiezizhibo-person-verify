@@ -47,12 +47,13 @@
             var msgEl = $("#msg");
             var reVerifyEl = $("#reVerify");
             var verifyToken = getQueryVariable("verifyToken");
+            var type = getQueryVariable("type");
             var name = getQueryVariable("name");
             //虽然通过实名认证，但所认证的人不是要求的人的情况,现仅限名字
             $.ajax({
                 url: "https://www.qiezizhibo.com/service-system/person/verify/result",
                 dataType: "json",
-                data: {verifyToken: verifyToken},
+                data: {verifyToken: verifyToken, type: type},
                 success: function (res) {
                     if (res && res.data != null && res.data.success == true) {
                         if (res.data.result != null && res.data.result.idcard_ocr_result != null) {

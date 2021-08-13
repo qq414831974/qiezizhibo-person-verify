@@ -42,6 +42,7 @@
 
         docReady(async function () {
             var verifyToken = getQueryVariable("verifyToken");
+            var type = getQueryVariable("type");
             var titleEl = $("#title");
             var tipEl = $("#tip");
             var msgEl = $("#msg");
@@ -70,7 +71,7 @@
                 $.ajax({
                     url: "https://www.qiezizhibo.com/service-system/person/verify/result",
                     dataType: "json",
-                    data: {verifyToken: verifyToken},
+                    data: {verifyToken: verifyToken, type: type},
                     success: function (res) {
                         if (res && res.data != null && res.data.success == false) {
                             var code = res.data.code;
@@ -380,7 +381,8 @@
         <div class="layout-footer">
             <div>©2021 茄子TV</div>
         </div>
-        <img class="layout-bg-bottom" src="https://www.qiezizhibo.com/face/print/dist/images/bg-bottom.d0dabf54.png" alt=""/>
+        <img class="layout-bg-bottom" src="https://www.qiezizhibo.com/face/print/dist/images/bg-bottom.d0dabf54.png"
+             alt=""/>
     </div>
 </div>
 </body>
