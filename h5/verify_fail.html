@@ -105,6 +105,9 @@
                         } else {
                             tipEl.html("连接失败");
                         }
+                    },
+                    error: function () {
+                        titleEl.html("身份核验失败");
                     }
                 });
             }

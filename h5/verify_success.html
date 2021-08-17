@@ -41,6 +41,7 @@
         }
 
         docReady(async function () {
+            var iconLoadingsEl = $("#icon-loading");
             var iconSuccessEl = $("#icon-success");
             var iconFailEl = $("#icon-fail");
             var titleEl = $("#title");
@@ -56,11 +57,14 @@
                 data: {verifyToken: verifyToken, type: type},
                 success: function (res) {
                     if (res && res.data != null && res.data.success == true) {
-                        if (res.data.result != null && res.data.result.idcard_ocr_result != null) {
-                            var idcard_ocr_result = res.data.result.idcard_ocr_result;
-                            var ocrName = idcard_ocr_result.name;
-                            if (name != ocrName) {
+                        if (res.data.result != null && res.data.result.idcard_confirm != null) {
+                            var idcard_confirm = res.data.result.idcard_confirm;
+                            var ocrName = idcard_confirm.name;
+                            if (decodeURIComponent(name) != ocrName) {
+                                iconLoadingsEl.addClass("hidden");
+                                iconFailEl.removeClass("hidden");
                                 titleEl.html("身份核验失败");
+
                                 msgEl.removeClass("hidden");
                                 msgEl.html("请确保是本人操作");
 
@@ -69,17 +73,26 @@
                                     // window.history.go(-3);
                                     navigateBack();
                                 });
-                            }else{
-                                titleEl.html("身份核验成功");
+                            } else {
+                                iconLoadingsEl.addClass("hidden");
                                 iconSuccessEl.removeClass("hidden");
-                                iconFailEl.addClass("hidden");
+                                titleEl.html("身份核验成功");
                             }
                         }
                     } else {
+                        iconLoadingsEl.addClass("hidden");
+                        iconFailEl.removeClass("hidden");
                         titleEl.html("身份核验失败");
                         msgEl.removeClass("hidden");
                         msgEl.html("连接失败");
                     }
+                },
+                error: function () {
+                    iconLoadingsEl.addClass("hidden");
+                    iconFailEl.removeClass("hidden");
+                    titleEl.html("身份核验失败");
+                    msgEl.removeClass("hidden");
+                    msgEl.html("连接失败");
                 }
             });
         })
@@ -269,6 +282,46 @@
             bottom: 0;
             box-sizing: border-box;
         }
+
+        .loading_svg__loading-line {
+            stroke-dasharray: 300%;
+            stroke-dashoffset: 300%;
+            -webkit-animation: loading 1.5s linear infinite;
+            animation: loading 1.5s linear infinite;
+            -webkit-transform-origin: center center;
+            transform-origin: center center;
+        }
+
+        @keyframes loading {
+            0% {
+                stroke-dashoffset: 300%;
+                -webkit-transform: rotate(
+                        0deg
+                );
+                transform: rotate(
+                        0deg
+                );
+            }
+            66% {
+                stroke-dashoffset: -300%;
+                -webkit-transform: rotate(
+                        360deg
+                );
+                transform: rotate(
+                        360deg
+                );
+            }
+
+            100% {
+                stroke-dashoffset: -300%;
+                -webkit-transform: rotate(
+                        360deg
+                );
+                transform: rotate(
+                        360deg
+                );
+            }
+        }
     </style>
 </head>
 <body>
@@ -277,19 +330,27 @@
         <div class="layout-content">
             <div class="p-result">
                 <div class="p-content">
+                    <div id="icon-loading" class="icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+                            <path d="M50 3a47 47 0 110 94 47 47 0 110-94" stroke="#F0F0F0" stroke-width="4.8"
+                                  fill="none"></path>
+                            <path d="M50 3a47 47 0 110 94 47 47 0 110-94" stroke="#5990F9" fill="none"
+                                  stroke-linecap="round" stroke-width="4.8" class="loading_svg__loading-line"></path>
+                        </svg>
+                    </div>
                     <div id="icon-success" class="icon hidden">
                         <svg viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg">
                             <path d="M14 0c7.732 0 14 6.268 14 14s-6.268 14-14 14S0 21.732 0 14 6.268 0 14 0zm0 1.311C6.992 1.311 1.311 6.992 1.311 14S6.992 26.689 14 26.689 26.689 21.008 26.689 14 21.008 1.311 14 1.311zm7.772 7.9a.787.787 0 01.011 1.103l-.01.01-8.664 8.688a.787.787 0 01-1.11.003l-.01-.01-4.568-4.68a.787.787 0 011.117-1.109l.01.01 4.01 4.11 8.101-8.124a.787.787 0 011.113-.001z"
                                   fill="#47CC74" fill-rule="nonzero"></path>
                         </svg>
                     </div>
-                    <div id="icon-fail" class="icon">
+                    <div id="icon-fail" class="icon hidden">
                         <svg viewBox="0 0 169 168" xmlns="http://www.w3.org/2000/svg">
                             <path d="M85 0c46.392 0 84 37.608 84 84s-37.608 84-84 84S1 130.392 1 84 38.608 0 85 0zm0 7.869C42.954 7.869 8.869 41.954 8.869 84S42.954 160.131 85 160.131 161.131 126.046 161.131 84 127.046 7.869 85 7.869zm.098 106.033a4.721 4.721 0 014.721 4.643v5.689a4.721 4.721 0 01-9.441.078l-.001-5.689a4.721 4.721 0 014.721-4.721zm.099-74.754a4.721 4.721 0 014.72 4.643l.001.078v56.3a4.721 4.721 0 01-9.442.078V43.87a4.721 4.721 0 014.72-4.721z"
                                   fill="#FFBF00" fill-rule="nonzero"></path>
                         </svg>
                     </div>
-                    <div id="title" class="title">加载中</div>
+                    <div id="title" class="title">加载中...</div>
                     <div id="msg" class="tip hidden">身份核验成功</div>
                 </div>
                 <div class="p-footer">
