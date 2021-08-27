@@ -50,6 +50,7 @@
             var verifyToken = getQueryVariable("verifyToken");
             var type = getQueryVariable("type");
             var name = getQueryVariable("name");
+            var idcard = getQueryVariable("idcard");
             //虽然通过实名认证，但所认证的人不是要求的人的情况,现仅限名字
             $.ajax({
                 url: "https://www.qiezizhibo.com/service-system/person/verify/result",
@@ -60,23 +61,53 @@
                         if (res.data.result != null && res.data.result.idcard_confirm != null) {
                             var idcard_confirm = res.data.result.idcard_confirm;
                             var ocrName = idcard_confirm.name;
-                            if (decodeURIComponent(name) != ocrName) {
-                                iconLoadingsEl.addClass("hidden");
-                                iconFailEl.removeClass("hidden");
-                                titleEl.html("身份核验失败");
+                            var ocrIdcard = idcard_confirm.idcard_number;
+                            var realName = decodeURIComponent(name);
+                            var realIdcard = decodeURIComponent(idcard);
+                            if (type == 0) {
+                                //联赛球员会员验证
+                                if (realName != ocrName) {
+                                    iconLoadingsEl.addClass("hidden");
+                                    iconFailEl.removeClass("hidden");
+                                    titleEl.html("身份核验失败");
 
-                                msgEl.removeClass("hidden");
-                                msgEl.html("请确保是本人操作");
+                                    msgEl.removeClass("hidden");
+                                    msgEl.html("请确保是本人操作");
 
-                                reVerifyEl.removeClass("hidden");
-                                reVerifyEl.click(function () {
-                                    // window.history.go(-3);
-                                    navigateBack();
-                                });
-                            } else {
-                                iconLoadingsEl.addClass("hidden");
-                                iconSuccessEl.removeClass("hidden");
-                                titleEl.html("身份核验成功");
+                                    reVerifyEl.removeClass("hidden");
+                                    reVerifyEl.click(function () {
+                                        // window.history.go(-3);
+                                        navigateBack();
+                                    });
+                                } else {
+                                    iconLoadingsEl.addClass("hidden");
+                                    iconSuccessEl.removeClass("hidden");
+                                    titleEl.html("身份核验成功");
+                                }
+                            } else if (type == 1) {
+                                //球员验证
+                                if (realName != ocrName || realIdcard != ocrIdcard) {
+                                    iconLoadingsEl.addClass("hidden");
+                                    iconFailEl.removeClass("hidden");
+                                    titleEl.html("身份核验失败");
+
+                                    msgEl.removeClass("hidden");
+                                    if (realName != ocrName) {
+                                        msgEl.html("请确保是本人操作");
+                                    } else if (realIdcard != ocrIdcard) {
+                                        msgEl.html("身份证校验失败，请确保是本人操作");
+                                    }
+
+                                    reVerifyEl.removeClass("hidden");
+                                    reVerifyEl.click(function () {
+                                        // window.history.go(-3);
+                                        navigateBack();
+                                    });
+                                } else {
+                                    iconLoadingsEl.addClass("hidden");
+                                    iconSuccessEl.removeClass("hidden");
+                                    titleEl.html("身份核验成功");
+                                }
                             }
                         }
                     } else {
