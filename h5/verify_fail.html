@@ -43,13 +43,18 @@
         docReady(async function () {
             var verifyToken = getQueryVariable("verifyToken");
             var type = getQueryVariable("type");
+            var idCardVerify = getQueryVariable("idCardVerify");
             var titleEl = $("#title");
             var tipEl = $("#tip");
             var msgEl = $("#msg");
             var reVerifyEl = $("#reVerify");
             // var loadingEl = $("#reVerify-button-loading");
             reVerifyEl.click(function () {
-                window.history.go(-3);
+                if(idCardVerify){
+                    window.history.go(-2);
+                }else{
+                    window.history.go(-3);
+                }
             });
 
             if (verifyToken != null) {
