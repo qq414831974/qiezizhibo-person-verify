@@ -64,28 +64,7 @@
                             var ocrIdcard = idcard_confirm.idcard_number;
                             var realName = decodeURIComponent(name);
                             var realIdcard = decodeURIComponent(idcard);
-                            if (type == 0) {
-                                //联赛球员会员验证
-                                if (realName != ocrName) {
-                                    iconLoadingsEl.addClass("hidden");
-                                    iconFailEl.removeClass("hidden");
-                                    titleEl.html("身份核验失败");
-
-                                    msgEl.removeClass("hidden");
-                                    msgEl.html("请确保是本人操作");
-
-                                    reVerifyEl.removeClass("hidden");
-                                    reVerifyEl.click(function () {
-                                        // window.history.go(-3);
-                                        navigateBack();
-                                    });
-                                } else {
-                                    iconLoadingsEl.addClass("hidden");
-                                    iconSuccessEl.removeClass("hidden");
-                                    titleEl.html("身份核验成功");
-                                }
-                            } else if (type == 1) {
-                                //球员验证
+                            if (name && idcard) {
                                 if (realName != ocrName || realIdcard != ocrIdcard) {
                                     iconLoadingsEl.addClass("hidden");
                                     iconFailEl.removeClass("hidden");
@@ -97,6 +76,25 @@
                                     } else if (realIdcard != ocrIdcard) {
                                         msgEl.html("身份证校验失败，请确保是本人操作");
                                     }
+
+                                    reVerifyEl.removeClass("hidden");
+                                    reVerifyEl.click(function () {
+                                        // window.history.go(-3);
+                                        navigateBack();
+                                    });
+                                } else if (name) {
+                                    iconLoadingsEl.addClass("hidden");
+                                    iconSuccessEl.removeClass("hidden");
+                                    titleEl.html("身份核验成功");
+                                }
+                            } else {
+                                if (realName != ocrName) {
+                                    iconLoadingsEl.addClass("hidden");
+                                    iconFailEl.removeClass("hidden");
+                                    titleEl.html("身份核验失败");
+
+                                    msgEl.removeClass("hidden");
+                                    msgEl.html("请确保是本人操作");
 
                                     reVerifyEl.removeClass("hidden");
                                     reVerifyEl.click(function () {
